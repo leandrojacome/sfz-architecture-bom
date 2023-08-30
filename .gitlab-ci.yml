@@ -1,0 +1,69 @@
+---
+stages:
+  - build
+  - test
+  - analysis
+  - publish
+  - deploy
+  - release
+
+variables:
+  TZ: America/Maceio
+  DOCKER_DRIVER: overlay2
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTDIR: ""
+  MAVEN_ARGS: "--batch-mode --no-transfer-progress"
+  TOOLS_JAVA_VERSION: "17"
+  TOOLS_MAVEN_VERSION: "3.9"
+  SKIP_JAVA_TESTS: "false"
+
+.configure_build_environment: &configure_build_environment
+  - export MAVEN_ARGS="$MAVEN_ARGS  --settings $MAVEN_SETTINGS"
+  - sfz-tool set java=$TOOLS_JAVA_VERSION maven=$TOOLS_MAVEN_VERSION $TOOLS_EXTRAS
+  - mvn --version
+  - java -version
+
+services:
+  - name: repositorio-docker.sefaz.al.gov.br/sefaz/docker-dind:20.10.202306161528
+    alias: docker
+
+default:
+  image: repositorio-docker.sefaz.al.gov.br/sefaz/ci-cd-image:1.1.0.202306161610
+  before_script:
+    - *configure_build_environment
+
+build:
+  stage: build
+  script:
+    - mvn package -DskipTests
+  artifacts:
+    paths:
+      - $CI_PROJECT_DIR/target/*
+    expire_in: 2 days
+
+tests:
+  stage: test
+  before_script:
+    - *configure_build_environment
+  script:
+    - mvn verify
+  artifacts:
+    reports:
+      junit:
+        - "$CI_PROJECT_DIR/**/target/surefire-reports/TEST-*.xml"
+    paths:
+      - $CI_PROJECT_DIR/target/*
+    expire_in: 2 days
+  rules:
+    - if: $SKIP_JAVA_TESTS != "true"
+  needs:
+    - job: build
+
+publish-maven-artifacts:
+  stage: publish
+  before_script:
+    - *configure_build_environment
+  script:
+    - mvn deploy -DskipTests
+  needs:
+    - job: tests

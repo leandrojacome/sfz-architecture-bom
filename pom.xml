@@ -6,43 +6,117 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.1</version>
+        <version>3.0.9</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>br.gov.al.sefaz.spring-boot</groupId>
+    <groupId>br.gov.al.sefaz.architecture</groupId>
     <artifactId>sfz-architecture-bom</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <description>Dependências compatíveis com a versão spring-boot 3.1.1.</description>
+    <description>Projeto BOM para arquitetura SEFAZ.</description>
 
     <properties>
+        <!-- Configurações gerais -->
+        <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+
+        <!-- Versões de dependências -->
+        <spring-cloud.version>2022.0.1</spring-cloud.version>
+        <spring-vault.version>3.0.3</spring-vault.version>
+        <problem-spring-web.version>0.29.1</problem-spring-web.version>
+        <logstash-logback-encoder>7.4</logstash-logback-encoder>
+
+        <!-- Plugins -->
+        <jib-maven-plugin.version>3.3.0</jib-maven-plugin.version>
+
+        <!-- Diversos -->
+        <repositorio.base.url>http://repositorio-v2.sefaz.al.gov.br</repositorio.base.url>
+        <repositorio.releases.url>${repositorio.base.url}/repository/maven-sefaz-releases</repositorio.releases.url>
+        <repositorio.snapshots.url>${repositorio.base.url}/repository/maven-sefaz-snapshots</repositorio.snapshots.url>
+
+        <!-- Docker -->
+        <docker.registry.url>repositorio-push.sefaz.al.gov.br</docker.registry.url>
+        <docker.imagename>sefaz/${project.artifactId}</docker.imagename>
     </properties>
 
     <modules>
-        <module>logging-api</module>
-        <module>security-api</module>
-        <module>web-api</module>
+        <module>sfz-logging-spring</module>
     </modules>
+
+    <scm>
+        <developerConnection>scm:git:https://gitlab.sefaz.al.gov.br/sefaz-al/ti/arquitetura/sfz-architecture-bom.git
+        </developerConnection>
+    </scm>
+
+    <repositories>
+        <repository>
+            <id>repositorio.sefaz.releases</id>
+            <name>Repositório de releases da SEFAZ</name>
+            <url>${repositorio.releases.url}</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>repositorio.sefaz.snapshots</id>
+            <name>Repositório de snapshots da SEFAZ</name>
+            <url>${repositorio.snapshots.url}</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+
+    <distributionManagement>
+        <repository>
+            <id>repositorio.sefaz</id>
+            <name>Repositório de releases da SEFAZ</name>
+            <url>${repositorio.releases.url}</url>
+        </repository>
+        <snapshotRepository>
+            <id>repositorio.sefaz</id>
+            <name>Repositório de snapshots da SEFAZ</name>
+            <url>${repositorio.snapshots.url}</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>br.gov.al.sefaz.spring-boot</groupId>
-                <artifactId>logging-api</artifactId>
-                <version>${project.version}</version>
+                <groupId>br.gov.al.sefaz.architecture</groupId>
+                <artifactId>sfz-logging-spring</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>br.gov.al.sefaz.spring-boot</groupId>
-                <artifactId>logging-logback-spring-boot</artifactId>
-                <version>${project.version}</version>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>br.gov.al.sefaz.spring-boot</groupId>
-                <artifactId>logging-logstach-spring-boot</artifactId>
-                <version>${project.version}</version>
+                <groupId>org.springframework.vault</groupId>
+                <artifactId>spring-vault-core</artifactId>
+                <version>${spring-vault.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zalando</groupId>
+                <artifactId>problem-spring-web-starter</artifactId>
+                <version>${problem-spring-web.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.logstash.logback</groupId>
+                <artifactId>logstash-logback-encoder</artifactId>
+                <version>${logstash-logback-encoder}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -51,10 +125,15 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <configuration>
-                    <tagNameFormat>@{project.version}</tagNameFormat>
-                </configuration>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -64,7 +143,55 @@
                     <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <tagNameFormat>@{project.version}</tagNameFormat>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                </configuration>
+            </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.google.cloud.tools</groupId>
+                    <artifactId>jib-maven-plugin</artifactId>
+                    <version>${jib-maven-plugin.version}</version>
+                    <configuration>
+                        <from>
+                            <image>eclipse-temurin:17-jdk-focal</image>
+                        </from>
+                        <to>
+                            <image>${docker.registry.url}/${docker.imagename}:${project.version}</image>
+                        </to>
+                        <allowInsecureRegistries>true</allowInsecureRegistries>
+                        <container>
+                            <entrypoint>
+                                <shell>bash</shell>
+                                <option>-c</option>
+                                <arg>chmod +x /entrypoint.sh &amp;&amp; sync &amp;&amp; /entrypoint.sh</arg>
+                            </entrypoint>
+                            <ports>
+                                <port>8080</port>
+                            </ports>
+                            <environment>
+                                <SPRING_OUTPUT_ANSI_ENABLED>ALWAYS</SPRING_OUTPUT_ANSI_ENABLED>
+                            </environment>
+                            <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+                        </container>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>3.0.1</version>
+                    <configuration>
+                        <tagNameFormat>@{project.version}</tagNameFormat>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
 </project>
