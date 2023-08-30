@@ -5,7 +5,7 @@
     <parent>
         <groupId>br.gov.al.sefaz.architecture</groupId>
         <artifactId>sfz-architecture-bom</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
+        <version>1.0.0.202308301459</version>
     </parent>
 
     <artifactId>sfz-logging-spring</artifactId>
