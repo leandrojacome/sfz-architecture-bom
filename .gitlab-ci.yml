@@ -56,8 +56,6 @@ tests:
     expire_in: 2 days
   rules:
     - if: $SKIP_JAVA_TESTS != "true"
-  needs:
-    - job: build
 
 publish-maven-artifacts:
   stage: publish
@@ -65,5 +63,5 @@ publish-maven-artifacts:
     - *configure_build_environment
   script:
     - mvn deploy -DskipTests
-  needs:
-    - job: tests
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"

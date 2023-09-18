@@ -1,6 +1,7 @@
 # sfz-architecture-bom
 
-A proposta deste projeto é estabelecer um [BOM do Maven](https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#bill-of-materials-bom-poms) e módulos compartilhados, a fim de promover consistência em projetos arquiteturais.
+A proposta deste projeto é estabelecer um [BOM do Maven](https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#bill-of-materials-bom-poms) e módulos compartilhados, a fim de promover consistência 
+em projetos arquiteturais.
 
 ## Desenvolvimento
 
@@ -84,3 +85,69 @@ Variáveis de ambiente:
 - `sefaz.logging.logstash.port`:  porta do servidor do Logstash.
 - `sefaz.logging.logstash.queue-size`:  Tamanho da fila de envio assíncrona dos logs.
 
+
+
+### sfz-database-spring
+
+### Integração com Oracle e histórico de banco de dados
+
+#### Como configurar
+
+##### 1) Habilite a integração
+
+Numa classe *Configuration* declare a anotação `br.gov.al.sefaz.database.config.EnableSefazOracleDatabase`.
+
+```java
+@Configuration
+@EnableSefazOracleDatabase
+public class SefazConfiguration {
+}
+```
+
+##### 2) Declare as configurações de Datasource necessárias
+
+Atenção: não é necessário declarar tipo de Datasource, ele já é definido pela configuração.
+
+```yaml
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521:DBIC
+    username: admdba006
+    password: admdba006
+```
+
+**Definindo um tamanho de pool maior (opcional)**
+
+```yaml
+spring:
+  datasource:
+    # ...
+    hikari:
+    	maximum-pool-size: 40
+```
+
+#### Identificação de usuário para histórico de banco de dados
+
+Para identificar o usuário que está causando as alterações no banco de dados para fins de histórico é necessário ter um 
+bean do Spring que implemente a interface `br.gov.al.sefaz.database.historico.FornecedorIdentidadeHistoricoDados`. O 
+contrato desta interface informa para o histórico se as alterações correntes foram originados de uma ação de usuário 
+final e quais os dados desse usuário. Sem nenhuma implementação registrada a integração não vai funcionar.
+
+**Como registrar uma implementação própria.:**
+```java
+@Bean
+FornecedoridentidadeHistoricoDadosImplentacao meufornecedoridentidadeHistoricoDados() {
+  return new FornecedoridentidadeHistoricoDadosImplentacao()
+}
+```
+
+**Implementação anônima**
+Caso a aplicação não possua interações com qualquer usuário basta registrar a implementação 
+`br.gov.al.sefaz.database.historico.UsuarioAnonimoFornecedoridentidadeHistoricoDados` 
+
+```
+@Bean
+UsuarioAnonimoFornecedoridentidadeHistoricoDados fornecedoridentidadeHistoricoDados() {
+  return new UsuarioAnonimoFornecedoridentidadeHistoricoDados();
+}
+```
