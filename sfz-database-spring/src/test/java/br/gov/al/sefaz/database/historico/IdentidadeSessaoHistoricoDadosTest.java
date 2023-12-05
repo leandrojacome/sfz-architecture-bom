@@ -3,7 +3,7 @@ package br.gov.al.sefaz.database.historico;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class IdentidadeSessaoHistoricoDadosTest {
 
@@ -12,7 +12,7 @@ class IdentidadeSessaoHistoricoDadosTest {
 
         @Test
         void deveExigirUmNumeroPessoaNaoNulo() {
-            assertThatThrownBy(() -> new IdentidadeSessaoHistoricoDados(null, 2))
+            assertThatThrownBy(() -> new IdentidadeSessaoHistoricoDados(null, "2"))
                     .hasMessage("numeroPessoa pessoa é requerido");
         }
 

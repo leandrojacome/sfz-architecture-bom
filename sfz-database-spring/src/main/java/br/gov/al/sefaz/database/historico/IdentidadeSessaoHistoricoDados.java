@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * Representa uma identidade que pode ser identificada como autor de alterações nos dados para registro de histórico.
  */
-public record IdentidadeSessaoHistoricoDados(Integer numeroPessoa, Integer identificadorConexao) {
+public record IdentidadeSessaoHistoricoDados(Integer numeroPessoa, String identificadorConexao) {
 
     /**
      * @param numeroPessoa - identificador da pessoa no modelo de dados da SEFAZ

@@ -32,7 +32,7 @@ class RegistraHistoricoServiceImplTest {
 
             stubSessaoAtualAssociadoUsuario(true);
             subCriacaoProcedures();
-            stubGetIdentidadeHistoricoDados(1, 2);
+            stubGetIdentidadeHistoricoDados(1, "2f3a");
 
             service.registrar(connection);
 
@@ -56,7 +56,7 @@ class RegistraHistoricoServiceImplTest {
         void deveExecutarProcedureIdentificaSessao() {
 
             final var numeroPessoa = 11;
-            final var identificadorConexao = 12;
+            final var identificadorConexao = "12";
 
             stubSessaoAtualAssociadoUsuario(true);
             subCriacaoProcedures();
@@ -73,7 +73,7 @@ class RegistraHistoricoServiceImplTest {
 
             stubSessaoAtualAssociadoUsuario(true);
             subCriacaoProcedures();
-            stubGetIdentidadeHistoricoDados(1, 2);
+            stubGetIdentidadeHistoricoDados(1, "2");
 
             var inOrder = inOrder(procedureLiberarSessao, procedureIdentificaSessao);
 
@@ -84,13 +84,13 @@ class RegistraHistoricoServiceImplTest {
 
         }
 
-        private void stubGetIdentidadeHistoricoDados(int numeroPessoa, int identificadorConexao) {
+        private void stubGetIdentidadeHistoricoDados(int numeroPessoa, String identificadorConexao) {
             when(fornecedoridentidadeHistoricoDados.get())
                     .thenReturn(umaIdentidadeHistorico(numeroPessoa, identificadorConexao));
         }
 
         private void stubSessaoAtualAssociadoUsuario(boolean isAssociado) {
-            when(fornecedoridentidadeHistoricoDados.isSessaoAtualAssociaUsuario())
+            when(fornecedoridentidadeHistoricoDados.isSessaoAtualAssociadaUsuario())
                     .thenReturn(isAssociado);
         }
 
@@ -107,7 +107,7 @@ class RegistraHistoricoServiceImplTest {
 
     }
 
-    private static IdentidadeSessaoHistoricoDados umaIdentidadeHistorico(int numeroPessoa, int identificadorConexao) {
+    private static IdentidadeSessaoHistoricoDados umaIdentidadeHistorico(int numeroPessoa, String identificadorConexao) {
         return new IdentidadeSessaoHistoricoDados(numeroPessoa, identificadorConexao);
     }
 

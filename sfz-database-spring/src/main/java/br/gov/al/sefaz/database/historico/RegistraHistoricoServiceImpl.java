@@ -21,7 +21,7 @@ public class RegistraHistoricoServiceImpl implements RegistraHistoricoService {
     @Override
     public void registrar(Connection connection) {
         liberarSessaoHistorico(connection);
-        if (fornecedoridentidadeHistoricoDados.isSessaoAtualAssociaUsuario()) {
+        if (fornecedoridentidadeHistoricoDados.isSessaoAtualAssociadaUsuario()) {
             var identidade = fornecedoridentidadeHistoricoDados.get();
             log.debug("Registrando sessão de histórico para {}.", identidade);
             identificarSessaoHistorico(connection, identidade);
