@@ -12,7 +12,7 @@ public class UsuarioAnonimoFornecedoridentidadeHistoricoDados implements Fornece
     private static final Logger log = LoggerFactory.getLogger(UsuarioAnonimoFornecedoridentidadeHistoricoDados.class);
 
     @Override
-    public boolean isSessaoAtualAssociaUsuario() {
+    public boolean isSessaoAtualAssociadaUsuario() {
         log.debug("Este acesso ao banco de dados não é associado a nenhum usuário final.");
         return false;
     }

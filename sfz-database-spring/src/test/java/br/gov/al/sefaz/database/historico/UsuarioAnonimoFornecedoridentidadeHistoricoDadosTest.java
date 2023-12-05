@@ -15,7 +15,7 @@ class UsuarioAnonimoFornecedoridentidadeHistoricoDadosTest {
         @Test
         void deveRetornarFalse() {
 
-            assertThat(fornecedorIdentidade.isSessaoAtualAssociaUsuario()).isFalse();
+            assertThat(fornecedorIdentidade.isSessaoAtualAssociadaUsuario()).isFalse();
 
         }
 

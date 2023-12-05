@@ -12,6 +12,6 @@ public interface FornecedorIdentidadeHistoricoDados extends Supplier<IdentidadeS
      * Se a atual sessão de interação com o banco de dados pode ser associada a uma identidade de usuário.
      * @return true se existe usuário na sessão para registro de dados.
      */
-    boolean isSessaoAtualAssociaUsuario();
+    boolean isSessaoAtualAssociadaUsuario();
 
 }
