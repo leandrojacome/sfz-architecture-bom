@@ -36,6 +36,8 @@
         <jackson-datatype-problem>0.27.1</jackson-datatype-problem>
         <logstash-logback-encoder>7.4</logstash-logback-encoder>
         <jjwt.version>0.11.5</jjwt.version>
+        <cucumber-java.version>7.0.0</cucumber-java.version>
+        <cucumber-spring.version>7.0.0</cucumber-spring.version>
 
         <!-- Plugins -->
         <jib-maven-plugin.version>3.3.0</jib-maven-plugin.version>
@@ -48,12 +50,14 @@
         <!-- Docker -->
         <docker.registry.url>repositorio-push.sefaz.al.gov.br</docker.registry.url>
         <docker.imagename>sefaz/${project.artifactId}</docker.imagename>
+
     </properties>
 
     <modules>
         <module>sfz-logging-spring</module>
         <module>sfz-database-spring</module>
         <module>sfz-scurity-spring</module>
+        <module>sfz-cucumber-spring</module>
     </modules>
 
     <scm>
@@ -163,7 +167,17 @@
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt-jackson</artifactId>
-                <version>0.11.5</version>
+                <version>${jjwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.cucumber</groupId>
+                <artifactId>cucumber-java</artifactId>
+                <version>${cucumber-java.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.cucumber</groupId>
+                <artifactId>cucumber-spring</artifactId>
+                <version>${cucumber-spring.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
