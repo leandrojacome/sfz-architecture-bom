@@ -1,4 +1,4 @@
-package config;
+package br.gov.al.sefaz.test.cucumber;
 
 import io.cucumber.spring.CucumberContextConfiguration;
 
