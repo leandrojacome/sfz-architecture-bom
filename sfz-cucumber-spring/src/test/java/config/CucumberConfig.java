@@ -1,4 +1,4 @@
-package br.gov.al.sefaz.architecture.config;
+package config;
 
 import io.cucumber.spring.CucumberContextConfiguration;
 
