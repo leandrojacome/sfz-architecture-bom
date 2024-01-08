@@ -1,6 +1,6 @@
 package br.gov.al.sefaz.test.cucumber;
 
-import br.gov.al.sefaz.test.IntegrationTest;
+import br.gov.al.sefaz.test.config.IntegrationTest;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;

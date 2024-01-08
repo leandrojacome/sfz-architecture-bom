@@ -1,4 +1,4 @@
-package br.gov.al.sefaz.test;
+package br.gov.al.sefaz.test.config;
 
 import br.gov.al.sefaz.test.config.AsyncSyncConfiguration;
 import br.gov.al.sefaz.test.config.EmbeddedSQL;
